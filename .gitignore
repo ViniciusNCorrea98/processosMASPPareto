@@ -1,0 +1,16 @@
+# Fontes originais e dados brutos não fazem parte do repositório.
+/archive/
+/dataRaw.txt
+/data/rawData.txt
+
+# Dependências e artefatos recriáveis.
+/node_modules/
+/build/
+/dist/
+/public/exports/
+__pycache__/
+*.py[cod]
+
+# Mantém somente a entrega XLSX oficial; exportações auxiliares permanecem locais.
+/exports/*
+!/exports/MASP-P3-Simulacao.xlsx

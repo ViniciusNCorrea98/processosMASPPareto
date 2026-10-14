@@ -1,0 +1,44 @@
+[
+  {
+    "id": "SYN-REC-0001",
+    "orderId": "SYN-ORD-0001",
+    "receivedAt": "2025-03-01T00:00:00.000Z",
+    "linkedAt": "2025-03-03T00:00:00.000Z"
+  },
+  {
+    "id": "SYN-REC-0002",
+    "orderId": "SYN-ORD-0101",
+    "receivedAt": "2025-03-10T00:00:00.000Z",
+    "linkedAt": "2025-03-14T00:00:00.000Z"
+  },
+  {
+    "id": "SYN-REC-0003",
+    "orderId": "SYN-ORD-0101",
+    "receivedAt": "2025-03-15T00:00:00.000Z",
+    "linkedAt": "2025-03-17T00:00:00.000Z"
+  },
+  {
+    "id": "SYN-REC-0004",
+    "orderId": "SYN-ORD-0002",
+    "receivedAt": "2025-03-30T00:00:00.000Z",
+    "linkedAt": null
+  },
+  {
+    "id": "SYN-REC-0005",
+    "orderId": "SYN-ORD-0003",
+    "receivedAt": "2025-03-20T00:00:00.000Z",
+    "linkedAt": null
+  },
+  {
+    "id": "SYN-REC-0006",
+    "orderId": "SYN-ORD-0102",
+    "receivedAt": "2025-03-25T00:00:00.000Z",
+    "linkedAt": "2025-03-28T00:00:00.000Z"
+  },
+  {
+    "id": "SYN-REC-0007",
+    "orderId": "SYN-ORD-0202",
+    "receivedAt": "2025-03-05T00:00:00.000Z",
+    "linkedAt": "2025-03-09T00:00:00.000Z"
+  }
+]

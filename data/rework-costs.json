@@ -1,0 +1,29 @@
+[
+  {
+    "id": "SYN-COST-0001",
+    "receiptId": "SYN-REC-0002",
+    "description": "Busca adicional de documentos para conferência",
+    "reworkMinutes": 45,
+    "hourlyCostBRL": 80,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática para demonstrar uma atividade adicional; não comprova causa do atraso nem representa tarifa real."
+  },
+  {
+    "id": "SYN-COST-0002",
+    "receiptId": "SYN-REC-0005",
+    "description": "Reenvio simulado de documentação",
+    "reworkMinutes": 30,
+    "hourlyCostBRL": 120,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Valor e duração escolhidos apenas para exercício acadêmico; não significam que a pendência tenha causado retrabalho."
+  },
+  {
+    "id": "SYN-COST-0003",
+    "receiptId": "SYN-REC-0006",
+    "description": "Correção cadastral em documento",
+    "reworkMinutes": 20,
+    "hourlyCostBRL": 90,
+    "delayRelation": "nao_atribuida",
+    "assumptionJustification": "Premissa fictícia aplicada a um recebimento dentro do prazo para não associar custo automaticamente a atraso."
+  }
+]

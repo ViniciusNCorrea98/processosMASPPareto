@@ -1,0 +1,56 @@
+[
+  {
+    "id": "SYN-ORD-0001",
+    "codigo": "SYN-PO-0001",
+    "fornecedor": "Fornecedor Sintético 001",
+    "valorTotal": 1250,
+    "dataEmissao": "2025-01-15T00:00:00.000Z",
+    "status": "PENDING",
+    "statusApproval": "APPROVED",
+    "siengeOperationalStatus": "PENDING",
+    "siengeApprovalStatus": "APPROVED",
+    "siengeAuthorized": true,
+    "itens": [],
+    "obra": {
+      "id": "SYN-W-001",
+      "nome": "Obra Acadêmica Norte"
+    },
+    "nfe": null
+  },
+  {
+    "id": "SYN-ORD-0002",
+    "codigo": "SYN-PO-0002",
+    "fornecedor": "Fornecedor Sintético 002",
+    "valorTotal": 2780,
+    "dataEmissao": "2025-02-20T00:00:00.000Z",
+    "status": "PENDING",
+    "statusApproval": null,
+    "siengeOperationalStatus": "PENDING",
+    "siengeApprovalStatus": null,
+    "siengeAuthorized": false,
+    "itens": [],
+    "obra": {
+      "id": "SYN-W-002",
+      "nome": "Obra Acadêmica Centro"
+    },
+    "nfe": null
+  },
+  {
+    "id": "SYN-ORD-0003",
+    "codigo": "SYN-PO-0003",
+    "fornecedor": "Fornecedor Sintético 003",
+    "valorTotal": 4150,
+    "dataEmissao": "2025-03-12T00:00:00.000Z",
+    "status": "PENDING",
+    "statusApproval": null,
+    "siengeOperationalStatus": "PENDING",
+    "siengeApprovalStatus": null,
+    "siengeAuthorized": false,
+    "itens": [],
+    "obra": {
+      "id": "SYN-W-003",
+      "nome": "Obra Acadêmica Sul"
+    },
+    "nfe": null
+  }
+]

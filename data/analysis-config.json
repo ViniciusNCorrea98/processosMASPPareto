@@ -1,0 +1,12 @@
+{
+  "simulation": true,
+  "purpose": "academic MASP demonstration",
+  "cutoffAt": "2025-04-01T00:00:00.000Z",
+  "linkageDeadlineDays": 3,
+  "timeUnit": "calendar_days",
+  "countingRule": "Use elapsed UTC time divided by 86400000; a linkage is within the deadline when durationDays <= linkageDeadlineDays.",
+  "dateConvention": "All timestamps are ISO 8601 instants with explicit Z (UTC). The fixed cutoff is not generated from the current date, and no local-time conversion is applied.",
+  "openReceiptRule": "For linkedAt=null, calculate age from receivedAt through cutoffAt and keep the receipt in the open-pending denominator, separate from completed linkages.",
+  "invalidDataRule": "Report invalid records and exclude them from metrics with an explicit issue; never repair or silently discard them.",
+  "lossEstimation": "Not performed; neither order value nor elapsed time is used to estimate financial loss."
+}

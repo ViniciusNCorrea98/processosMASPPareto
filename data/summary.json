@@ -1,0 +1,19 @@
+{
+  "totalOrders": 12,
+  "pendingOrders": 3,
+  "approvedOrders": 10,
+  "rejectedOrders": 0,
+  "partiallyDeliveredOrders": 3,
+  "fullyDeliveredOrders": 3,
+  "cancelledOrders": 3,
+  "totalOrderValue": 72381.5,
+  "pendingOrderValue": 8180,
+  "averageTicket": 6031.791666666667,
+  "totalNfes": 0,
+  "totalNfeValue": 0,
+  "totalWorks": 4,
+  "totalTeams": 2,
+  "totalCompanies": 1,
+  "totalCollaborators": 5,
+  "totalCreditors": 10
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "SYN-ORD-0301",
+    "codigo": "SYN-PO-0301",
+    "fornecedor": "Fornecedor Sintético 010",
+    "valorTotal": 2100,
+    "dataEmissao": "2025-01-22T00:00:00.000Z",
+    "status": "CANCELED",
+    "statusApproval": "APPROVED",
+    "siengeOperationalStatus": "CANCELED",
+    "siengeApprovalStatus": "APPROVED",
+    "siengeAuthorized": true,
+    "itens": [],
+    "obra": {
+      "id": "SYN-W-002",
+      "nome": "Obra Acadêmica Centro"
+    },
+    "nfe": null
+  },
+  {
+    "id": "SYN-ORD-0302",
+    "codigo": "SYN-PO-0302",
+    "fornecedor": "Fornecedor Sintético 001",
+    "valorTotal": 5875,
+    "dataEmissao": "2025-02-26T00:00:00.000Z",
+    "status": "CANCELED",
+    "statusApproval": "APPROVED",
+    "siengeOperationalStatus": "CANCELED",
+    "siengeApprovalStatus": "APPROVED",
+    "siengeAuthorized": true,
+    "itens": [],
+    "obra": {
+      "id": "SYN-W-003",
+      "nome": "Obra Acadêmica Sul"
+    },
+    "nfe": null
+  },
+  {
+    "id": "SYN-ORD-0303",
+    "codigo": "SYN-PO-0303",
+    "fornecedor": "Fornecedor Sintético 002",
+    "valorTotal": 990,
+    "dataEmissao": "2025-03-25T00:00:00.000Z",
+    "status": "CANCELED",
+    "statusApproval": "APPROVED",
+    "siengeOperationalStatus": "CANCELED",
+    "siengeApprovalStatus": "APPROVED",
+    "siengeAuthorized": true,
+    "itens": [],
+    "obra": {
+      "id": "SYN-W-001",
+      "nome": "Obra Acadêmica Norte"
+    },
+    "nfe": null
+  }
+]

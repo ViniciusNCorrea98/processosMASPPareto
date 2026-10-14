@@ -1,0 +1,56 @@
+{
+  "nature": "synthetic",
+  "purpose": "academic demonstration",
+  "isRealExtraction": false,
+  "sourceFile": null,
+  "processingDate": "2026-10-13",
+  "extractionDate": null,
+  "filters": null,
+  "period": null,
+  "generatedQuantity": {
+    "orders": 12,
+    "receipts": 7,
+    "works": 4,
+    "suppliers": 10,
+    "teams": 2,
+    "companies": 1,
+    "collaborators": 5
+  },
+  "generationRules": [
+    "Use only the observed order schema and relationship shape as a template.",
+    "Replace every source identifier, code, name, date and monetary value with synthetic values.",
+    "Keep operational status separate from approval status.",
+    "Include pending orders with approval and without approval, plus partially delivered, fully delivered and canceled scenarios.",
+    "Do not infer ERP absence from nfe:null or itens:[]; these values are retained as synthetic schema-compatible placeholders.",
+    "No correspondence table between source and synthetic records was created."
+  ],
+  "pagesFound": null,
+  "declaredTotals": null,
+  "duplicates": {
+    "identicalRemoved": [],
+    "repeatedIds": []
+  },
+  "conflicts": [],
+  "completeness": {
+    "pending": "complete",
+    "partiallyDelivered": "complete",
+    "fullyDelivered": "complete",
+    "canceled": "complete"
+  },
+  "statusDimensions": {
+    "operationalStatusField": "status",
+    "operationalStatusMirror": "siengeOperationalStatus",
+    "approvalFields": [
+      "statusApproval",
+      "siengeApprovalStatus",
+      "siengeAuthorized"
+    ]
+  },
+  "archivedOriginals": "archive/originals/",
+  "archiveExcludedFromVersioning": true,
+  "documentation": "docs/synthetic-data-schema.md",
+  "qualityNotes": [
+    "This dataset is synthetic and must not be presented as an ERP extraction.",
+    "Original files were preserved outside data/ and are excluded by .gitignore."
+  ]
+}
