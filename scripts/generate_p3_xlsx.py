@@ -92,7 +92,8 @@ def run_analysis(orders, receipts, config):
     payload = json.dumps({"orders": orders, "receipts": receipts, "config": config})
     node_code = r'''
 import { analyzeReceipts } from './analysis/masp.mjs';
-const input = JSON.parse(process.argv[1]);
+import fs from 'node:fs';
+const input = JSON.parse(fs.readFileSync(0, 'utf8'));
 const result = analyzeReceipts(input);
 console.log(JSON.stringify({
   completedLinkages: result.completedLinkages,
@@ -108,14 +109,35 @@ console.log(JSON.stringify({
 }));
 '''
     completed = subprocess.run(
-        ["node", "--input-type=module", "-e", node_code, payload],
+        ["node", "--input-type=module", "-e", node_code],
         cwd=ROOT,
         check=True,
+        input=payload,
         capture_output=True,
         text=True,
         encoding="utf-8",
     )
     return json.loads(completed.stdout)
+
+
+def validate_synthetic_dataset():
+    completed = subprocess.run(
+        ["node", "scripts/validate_synthetic_data.mjs"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    if completed.returncode != 0:
+        raise RuntimeError(f"Synthetic dataset validation failed:\n{completed.stdout}{completed.stderr}")
+
+
+def format_number(value):
+    return f"{value:.2f}".rstrip("0").rstrip(".")
+
+
+def format_brl(value):
+    return f"R$ {value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
 def validate_xlsx(path: Path):
@@ -154,8 +176,8 @@ def validate_xlsx(path: Path):
                 raise RuntimeError(f"Worksheet {index} must hide page-break markers in normal view")
         required_formulas = (
             "ROUND(C5/60*D5,2)",
-            "MEDIAN('Recebimentos'!$P$6:$P$12)",
-            "SUMIF('Recebimentos'!$J$6:$J$12,A5,'Recebimentos'!$M$6:$M$12)",
+            "MEDIAN('Recebimentos'!$P$6:",
+            "SUMIF('Recebimentos'!$J$6:",
         )
         formula_xml = "\n".join(sheet_xml.values())
         if any(formula not in formula_xml for formula in required_formulas):
@@ -207,6 +229,7 @@ def pareto_interpretation(rows):
 
 
 def main():
+    validate_synthetic_dataset()
     orders = [order for filename in ORDER_FILES for order in read_json(filename)]
     receipts = read_json("receipts.json")
     costs = read_json("rework-costs.json")
@@ -221,17 +244,13 @@ def main():
 
     output = analysis
     validation_by_id = {item["receiptId"]: item for item in output["receiptValidation"]}
-    if (output["completedLinkages"], output["lateLinkages"], output["openReceipts"], output["overdueOpenReceipts"], output["medianLinkageDays"]) != (5, 2, 2, 1, 3):
-        raise RuntimeError(f"Unexpected MASP baseline: {output}")
-
     late_by_work = output["paretoLateByWork"]
-    if [row["count"] for row in late_by_work] != [1, 1] or [row["cumulativePercent"] for row in late_by_work] != [50, 100]:
-        raise RuntimeError(f"Unexpected Pareto baseline: {late_by_work}")
-    if total_cost != 150 or cost_totals != {"assumida_no_cenario": 120, "nao_atribuida": 30, "indeterminada": 0}:
-        raise RuntimeError(f"Unexpected cost reconciliation: {total_cost}, {cost_totals}")
     expected_work_names = {order["obra"]["nome"] for order in orders}
     if any(row["obraName"] not in expected_work_names for row in late_by_work):
         raise RuntimeError("UTF-8 regression: Pareto work name differs from the synthetic order data")
+    valid_receipt_count = output["completedLinkages"] + output["openReceipts"]
+    deadline_days = config["linkageDeadlineDays"]
+    late_percentage = format_number(output["lateLinkagePercent"])
 
     OUTPUT.parent.mkdir(exist_ok=True)
     workbook = xlsxwriter.Workbook(str(OUTPUT))
@@ -321,16 +340,16 @@ def main():
             (deadline_row, "Prazo de vinculação", config["linkageDeadlineDays"]),
             (11, "Convenção de datas", "Datas e horários são apresentados em UTC, sem conversão para o horário local."),
             (12, "Período dos recebimentos", f"{iso_date(min(receipt_dates))} a {iso_date(max(receipt_dates))}"),
-            (13, "Recorte", "O conjunto analisado reúne sete recebimentos sintéticos e não representa uma população estatística."),
+            (13, "Recorte", f"O conjunto analisado reúne {len(receipts)} recebimentos sintéticos e não representa uma população estatística."),
         ]),
         (15, "3. Método e interpretação", [
-            (16, "Regra de prazo", "Vínculo concluído em até 3 dias corridos é Dentro do prazo; acima de 3 dias é Fora do prazo. Sem data de vínculo, o recebimento permanece aberto."),
+            (16, "Regra de prazo", f"Vínculo concluído em até {deadline_days} dias corridos é Dentro do prazo; acima de {deadline_days} dias é Fora do prazo. Sem data de vínculo, o recebimento permanece aberto."),
             (17, "Pendências abertas", "Para concluídos, o tempo vai do recebimento ao vínculo. Para abertos, a idade vai do recebimento ao corte fixo. Aberto vencido não integra o denominador de concluídos."),
             (18, "Cálculo", "Os intervalos são calculados em dias corridos. A mediana considera somente os vínculos concluídos e válidos."),
-            (19, "Interpretação", "O percentual de 40% corresponde a 2 vínculos fora do prazo entre 5 vínculos concluídos. As 2 pendências abertas são apresentadas separadamente."),
+            (19, "Interpretação", f"O percentual de {late_percentage}% corresponde a {output['lateLinkages']} vínculos fora do prazo entre {output['completedLinkages']} concluídos. As {output['openReceipts']} pendências abertas são apresentadas separadamente."),
         ]),
         (21, "4. Custos e limitações", [
-            (22, "Custos fictícios", "O total estimado é de R$ 150,00: R$ 120,00 associados aos atrasos por premissa, R$ 30,00 não atribuídos e R$ 0,00 indeterminados."),
+            (22, "Custos fictícios", f"O total registrado é de {format_brl(total_cost)}: {format_brl(cost_totals['assumida_no_cenario'])} associados aos atrasos por premissa, {format_brl(cost_totals['nao_atribuida'])} não atribuídos e {format_brl(cost_totals['indeterminada'])} indeterminados."),
             (23, "Limitações", "Os valores não comprovam causalidade, prejuízo real, multas, perdas ou ausência de documentos."),
         ]),
     ]
@@ -355,7 +374,7 @@ def main():
     orders_sheet = workbook.add_worksheet("Pedidos")
     orders_sheet.set_tab_color("#245B7A")
     configure_sheet(orders_sheet, landscape=True)
-    write_title(orders_sheet, 13, "Pedidos — base sintética", "A tabela reúne 12 pedidos. Situação operacional e aprovação são dimensões distintas. Campos vazios indicam apenas ausência de valor na base sintética.")
+    write_title(orders_sheet, 13, "Pedidos — base sintética", f"A tabela reúne {len(orders)} pedidos. Situação operacional e aprovação são dimensões distintas. Campos vazios indicam apenas ausência de valor na base sintética.")
     order_header_row = 4
     order_data_start = 5
     order_headers = ["Código do pedido", "Fornecedor", "Obra", "Emissão (UTC)", "Valor do pedido (R$)", "Situação operacional", "Aprovação", "ID técnico do pedido", "Código da situação", "Código da aprovação", "Autorizado no cenário", "ID técnico da obra", "Itens (JSON)", "NFe (JSON sintético)"]
@@ -394,7 +413,7 @@ def main():
     # A impressão privilegia a leitura acadêmica; o detalhamento técnico continua
     # disponível e filtrável na planilha pelo agrupamento à direita.
     orders_sheet.print_area(0, 0, order_end, 6)
-    orders_sheet.fit_to_pages(1, 1)
+    orders_sheet.fit_to_pages(1, 0)
     orders_sheet.set_selection("A1")
 
     # Recebimentos: primary analytical view followed by grouped calculation columns.
@@ -456,7 +475,7 @@ def main():
     receipt_sheet.autofilter(receipt_header_row, 0, receipt_end, len(receipt_headers) - 1)
     receipt_sheet.repeat_rows(receipt_header_row, receipt_header_row)
     receipt_sheet.print_area(0, 0, receipt_end, 7)
-    receipt_sheet.fit_to_pages(1, 1)
+    receipt_sheet.fit_to_pages(1, 0)
     receipt_sheet.set_selection("A1")
 
     # Indicadores: completed linkages and open receipts are deliberately separate.
@@ -464,7 +483,7 @@ def main():
     indicator_sheet.set_tab_color("#4C7A91")
     configure_sheet(indicator_sheet, landscape=False, zoom=95)
     indicator_sheet.set_column("A:A", 38); indicator_sheet.set_column("B:B", 18); indicator_sheet.set_column("C:F", 17)
-    write_title(indicator_sheet, 5, "Indicadores do MASP", "Síntese dos resultados calculados a partir dos sete eventos válidos.")
+    write_title(indicator_sheet, 5, "Indicadores do MASP", f"Síntese dos resultados calculados a partir de {valid_receipt_count} eventos válidos.")
     indicator_sheet.merge_range(3, 0, 3, 5, "Vínculos concluídos", section)
     indicator_sheet.write(4, 0, "Indicador", header)
     indicator_sheet.write(4, 1, "Resultado", header)
@@ -472,8 +491,8 @@ def main():
     completed_rows = [
         (5, "Recebimentos válidos", f"=SUM('Recebimentos'!$K${receipt_data_start + 1}:$K${receipt_end + 1})", output["completedLinkages"] + output["openReceipts"], "Todos os eventos válidos; inválidos e fora do recorte seriam excluídos.", result_integer),
         (6, "Vínculos concluídos", f"=SUM('Recebimentos'!$L${receipt_data_start + 1}:$L${receipt_end + 1})", output["completedLinkages"], "Somente vínculos concluídos válidos.", result_integer),
-        (7, "Concluídos fora do prazo", f"=SUM('Recebimentos'!$M${receipt_data_start + 1}:$M${receipt_end + 1})", output["lateLinkages"], "Concluídos com tempo superior a 3 dias corridos.", result_integer),
-        (8, "Percentual fora do prazo", "=IF(B7=0,0,B8/B7)", output["lateLinkagePercent"] / 100, "2 vínculos fora do prazo ÷ 5 vínculos concluídos = 40%.", result_percent),
+        (7, "Concluídos fora do prazo", f"=SUM('Recebimentos'!$M${receipt_data_start + 1}:$M${receipt_end + 1})", output["lateLinkages"], f"Concluídos com tempo superior a {deadline_days} dias corridos.", result_integer),
+        (8, "Percentual fora do prazo", "=IF(B7=0,0,B8/B7)", output["lateLinkagePercent"] / 100, f"{output['lateLinkages']} vínculos fora do prazo ÷ {output['completedLinkages']} vínculos concluídos = {late_percentage}%.", result_percent),
         (9, "Mediana do tempo de vinculação (dias)", f"=IFERROR(MEDIAN('Recebimentos'!$P${receipt_data_start + 1}:$P${receipt_end + 1}),\"\")", output["medianLinkageDays"], "Mediana calculada somente entre vínculos concluídos válidos.", result_decimal),
     ]
     for row, name, formula, cached, explanation, result_format in completed_rows:
@@ -495,7 +514,7 @@ def main():
         indicator_sheet.merge_range(row, 2, row, 5, explanation, text_even if row % 2 else text_odd)
         indicator_sheet.set_row(row, 34)
     indicator_sheet.merge_range(16, 0, 16, 5, "Observação", section)
-    indicator_sheet.merge_range(17, 0, 18, 5, "Os dados são sintéticos. O percentual de 40% corresponde a dois vínculos fora do prazo entre cinco concluídos. As duas pendências abertas são apresentadas separadamente.", warning_note)
+    indicator_sheet.merge_range(17, 0, 18, 5, f"Os dados são sintéticos. O percentual de {late_percentage}% corresponde a {output['lateLinkages']} vínculos fora do prazo entre {output['completedLinkages']} concluídos. As {output['openReceipts']} pendências abertas são apresentadas separadamente.", warning_note)
     indicator_sheet.set_row(17, 34); indicator_sheet.set_row(18, 34)
     indicator_sheet.freeze_panes(5, 0)
     indicator_sheet.repeat_rows(4, 4)
@@ -612,7 +631,7 @@ def main():
     costs_sheet.set_row(method_row + 2, 25)
     limitation_row = method_row + 4
     costs_sheet.merge_range(limitation_row, 0, limitation_row, 6, "Limitações da análise", section)
-    costs_sheet.merge_range(limitation_row + 1, 0, limitation_row + 2, 6, "Tempos e valores são fictícios. A associação de R$ 120,00 aos atrasos foi estabelecida como premissa do estudo e não demonstra causalidade ou prejuízo real. Os R$ 30,00 restantes não foram atribuídos ao atraso.", warning_note)
+    costs_sheet.merge_range(limitation_row + 1, 0, limitation_row + 2, 6, f"Tempos e valores são fictícios. A associação de {format_brl(cost_totals['assumida_no_cenario'])} aos atrasos foi estabelecida como premissa do estudo e não demonstra causalidade ou prejuízo real. {format_brl(cost_totals['nao_atribuida'])} não foram atribuídos ao atraso.", warning_note)
     costs_sheet.set_row(limitation_row + 1, 25)
     costs_sheet.set_row(limitation_row + 2, 25)
     costs_sheet.repeat_rows(cost_header_row, cost_header_row)

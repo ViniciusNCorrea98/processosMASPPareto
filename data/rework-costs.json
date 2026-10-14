@@ -2,28 +2,217 @@
   {
     "id": "SYN-COST-0001",
     "receiptId": "SYN-REC-0002",
-    "description": "Busca adicional de documentos para conferência",
-    "reworkMinutes": 45,
-    "hourlyCostBRL": 80,
-    "delayRelation": "assumida_no_cenario",
-    "assumptionJustification": "Premissa didática para demonstrar uma atividade adicional; não comprova causa do atraso nem representa tarifa real."
+    "description": "Conferência adicional de documentação",
+    "reworkMinutes": 15,
+    "hourlyCostBRL": 65,
+    "delayRelation": "nao_atribuida",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
   },
   {
     "id": "SYN-COST-0002",
-    "receiptId": "SYN-REC-0005",
-    "description": "Reenvio simulado de documentação",
+    "receiptId": "SYN-REC-0009",
+    "description": "Regularização simulada de cadastro",
     "reworkMinutes": 30,
-    "hourlyCostBRL": 120,
+    "hourlyCostBRL": 80,
     "delayRelation": "assumida_no_cenario",
-    "assumptionJustification": "Valor e duração escolhidos apenas para exercício acadêmico; não significam que a pendência tenha causado retrabalho."
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
   },
   {
     "id": "SYN-COST-0003",
-    "receiptId": "SYN-REC-0006",
-    "description": "Correção cadastral em documento",
-    "reworkMinutes": 20,
-    "hourlyCostBRL": 90,
+    "receiptId": "SYN-REC-0016",
+    "description": "Revisão acadêmica de vínculo",
+    "reworkMinutes": 45,
+    "hourlyCostBRL": 95,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0004",
+    "receiptId": "SYN-REC-0023",
+    "description": "Conferência adicional de documentação",
+    "reworkMinutes": 60,
+    "hourlyCostBRL": 110,
     "delayRelation": "nao_atribuida",
-    "assumptionJustification": "Premissa fictícia aplicada a um recebimento dentro do prazo para não associar custo automaticamente a atraso."
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0005",
+    "receiptId": "SYN-REC-0030",
+    "description": "Regularização simulada de cadastro",
+    "reworkMinutes": 75,
+    "hourlyCostBRL": 65,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0006",
+    "receiptId": "SYN-REC-0037",
+    "description": "Revisão acadêmica de vínculo",
+    "reworkMinutes": 15,
+    "hourlyCostBRL": 80,
+    "delayRelation": "indeterminada",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0007",
+    "receiptId": "SYN-REC-0044",
+    "description": "Conferência adicional de documentação",
+    "reworkMinutes": 30,
+    "hourlyCostBRL": 95,
+    "delayRelation": "nao_atribuida",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0008",
+    "receiptId": "SYN-REC-0051",
+    "description": "Regularização simulada de cadastro",
+    "reworkMinutes": 45,
+    "hourlyCostBRL": 110,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0009",
+    "receiptId": "SYN-REC-0058",
+    "description": "Revisão acadêmica de vínculo",
+    "reworkMinutes": 60,
+    "hourlyCostBRL": 65,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0010",
+    "receiptId": "SYN-REC-0065",
+    "description": "Conferência adicional de documentação",
+    "reworkMinutes": 75,
+    "hourlyCostBRL": 80,
+    "delayRelation": "nao_atribuida",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0011",
+    "receiptId": "SYN-REC-0072",
+    "description": "Regularização simulada de cadastro",
+    "reworkMinutes": 15,
+    "hourlyCostBRL": 95,
+    "delayRelation": "indeterminada",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0012",
+    "receiptId": "SYN-REC-0079",
+    "description": "Revisão acadêmica de vínculo",
+    "reworkMinutes": 30,
+    "hourlyCostBRL": 110,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0013",
+    "receiptId": "SYN-REC-0086",
+    "description": "Conferência adicional de documentação",
+    "reworkMinutes": 45,
+    "hourlyCostBRL": 65,
+    "delayRelation": "nao_atribuida",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0014",
+    "receiptId": "SYN-REC-0093",
+    "description": "Regularização simulada de cadastro",
+    "reworkMinutes": 60,
+    "hourlyCostBRL": 80,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0015",
+    "receiptId": "SYN-REC-0100",
+    "description": "Revisão acadêmica de vínculo",
+    "reworkMinutes": 75,
+    "hourlyCostBRL": 95,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0016",
+    "receiptId": "SYN-REC-0107",
+    "description": "Conferência adicional de documentação",
+    "reworkMinutes": 15,
+    "hourlyCostBRL": 110,
+    "delayRelation": "nao_atribuida",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0017",
+    "receiptId": "SYN-REC-0114",
+    "description": "Regularização simulada de cadastro",
+    "reworkMinutes": 30,
+    "hourlyCostBRL": 65,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0018",
+    "receiptId": "SYN-REC-0121",
+    "description": "Revisão acadêmica de vínculo",
+    "reworkMinutes": 45,
+    "hourlyCostBRL": 80,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0019",
+    "receiptId": "SYN-REC-0128",
+    "description": "Conferência adicional de documentação",
+    "reworkMinutes": 60,
+    "hourlyCostBRL": 95,
+    "delayRelation": "nao_atribuida",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0020",
+    "receiptId": "SYN-REC-0135",
+    "description": "Regularização simulada de cadastro",
+    "reworkMinutes": 75,
+    "hourlyCostBRL": 110,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0021",
+    "receiptId": "SYN-REC-0142",
+    "description": "Revisão acadêmica de vínculo",
+    "reworkMinutes": 15,
+    "hourlyCostBRL": 65,
+    "delayRelation": "indeterminada",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0022",
+    "receiptId": "SYN-REC-0149",
+    "description": "Conferência adicional de documentação",
+    "reworkMinutes": 30,
+    "hourlyCostBRL": 80,
+    "delayRelation": "nao_atribuida",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0023",
+    "receiptId": "SYN-REC-0156",
+    "description": "Regularização simulada de cadastro",
+    "reworkMinutes": 45,
+    "hourlyCostBRL": 95,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
+  },
+  {
+    "id": "SYN-COST-0024",
+    "receiptId": "SYN-REC-0163",
+    "description": "Revisão acadêmica de vínculo",
+    "reworkMinutes": 60,
+    "hourlyCostBRL": 110,
+    "delayRelation": "assumida_no_cenario",
+    "assumptionJustification": "Premissa didática de atividade adicional; não comprova causa, tarifa ou prejuízo real."
   }
 ]

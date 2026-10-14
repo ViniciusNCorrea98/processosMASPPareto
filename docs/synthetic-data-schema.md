@@ -20,7 +20,7 @@ Cada pedido mantem os campos `id`, `codigo`, `fornecedor`, `valorTotal`, `dataEm
 
 ## Eventos de recebimento atuais
 
-`data/receipts.json` contem sete eventos sinteticos relacionados a pedidos existentes. Nao ha eventos para pedidos cancelados. Um pedido possui dois recebimentos para demonstrar que cada recebimento e contado separadamente; isso nao transforma uma entrega parcial em vinculo pendente.
+`data/receipts.json` contem eventos sinteticos relacionados a pedidos existentes. Nao ha eventos para pedidos cancelados e um pedido pode possuir mais de um recebimento, pois cada evento e contado separadamente; isso nao transforma uma entrega parcial em vinculo pendente.
 
 Os cenarios cobertos sao: vinculo dentro do prazo, vinculo apos o prazo, recebimento sem vinculo ainda dentro do prazo, recebimento sem vinculo com prazo vencido e vinculo exatamente no limite.
 
@@ -99,7 +99,7 @@ O comando `npm run generate:p3` (ou `python scripts/generate_p3_xlsx.py`) gera l
 
 As abas `Leia-me`, `Pedidos`, `Recebimentos`, `Indicadores`, `Pareto` e `Custos` identificam a natureza simulada. As colunas derivadas usam fórmulas do Excel e têm valores em cache para conferência. O Pareto é um gráfico combinado editável de colunas e linha, com linha de referência de 80%; não há imagem substituindo o gráfico. Datas são gravadas como instantes UTC sem conversão local e `linkedAt: null` fica como célula vazia.
 
-O exportador compara os números com `analysis/masp.mjs` e interrompe a geração se a base sintética atual não produzir 7 recebimentos válidos, 5 vínculos, 2 atrasados, 40%, 2 abertos, 1 aberto vencido, mediana 3 dias e Pareto com contagens `[1, 1]` e acumulados `[50%, 100%]`. A validação estrutural também verifica as partes do XLSX, o gráfico combinado e a ausência de referências externas ou nomes de arquivos originais.
+O exportador compara os resultados com `analysis/masp.mjs` e interrompe a geração quando os dados sintéticos não passam na validação de integridade. A validação estrutural também verifica as partes do XLSX, o gráfico combinado e a ausência de referências externas ou nomes de arquivos originais.
 
 O arquivo `requirements-p3.txt` fixa a única dependência Python necessária à geração (`XlsxWriter`). `exports/` permanece excluído pelo `.gitignore`.
 
@@ -125,6 +125,14 @@ O XLSX e um retrato reproduzivel dos JSONs sinteticos, prazo e corte no momento 
 O Pareto e derivado em cada geracao dos recebimentos elegiveis fora do prazo, inclui todas as obras com ocorrencias, usa o total completo como denominador e ordena por quantidade decrescente, com desempate por `obra.id` crescente. A frase de interpretacao e descritiva, sem causas ou concentracao 80/20 forcada. Recorte sem ocorrencias produz Pareto vazio; uma categoria acumula 100%.
 
 No software, diferencas em milissegundos sao convertidas em dias dividindo por 86.400.000. No Excel, datas numericas subtraidas ja retornam dias. O corte e fixo e nao usa a data atual.
+
+## Preparacao para expansao sintetica
+
+A base atual e uma linha de base didatica. Antes de ampliar o volume, execute `npm run validate:data`: o comando verifica identificadores unicos, status operacionais, relacionamentos entre pedidos, recebimentos e custos, datas UTC, consistencia do resumo e metadados que preservam a natureza sintetica sem vinculo com arquivos-fonte.
+
+O gerador do XLSX tambem executa essa validacao antes de exportar. Quantidades, percentuais e textos da planilha sao calculados a partir dos JSONs; os totais atuais nao sao pre-requisitos da geracao. Uma expansao deve manter IDs sinteticos estaveis, referencias validas, `dataEmissao <= receivedAt <= linkedAt` quando houver vinculo, e ausencia de recebimentos para pedidos cancelados.
+
+`data/synthetic-scenarios.json` declara apenas os volumes e cenarios necessarios para a demonstracao. `npm run generate:data` usa a semente declarada para recriar os JSONs, `summary.json` e `extraction-metadata.json` sem consultar o ERP ou qualquer arquivo em `archive/`. A ampliacao e intencionalmente limitada a esse esquema existente; campos novos exigem justificativa metodologica e validacao propria.
 
 ## Relacao dos custos com atraso
 

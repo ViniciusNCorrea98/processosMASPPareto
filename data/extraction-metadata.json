@@ -1,28 +1,30 @@
 {
   "nature": "synthetic",
-  "purpose": "academic demonstration",
+  "purpose": "academic MASP demonstration with deterministic scenarios",
   "isRealExtraction": false,
   "sourceFile": null,
-  "processingDate": "2026-10-13",
+  "processingDate": "2026-10-14",
   "extractionDate": null,
   "filters": null,
-  "period": null,
+  "period": {
+    "start": "2025-01-01T00:00:00.000Z",
+    "end": "2025-04-01T00:00:00.000Z"
+  },
   "generatedQuantity": {
-    "orders": 12,
-    "receipts": 7,
-    "works": 4,
-    "suppliers": 10,
-    "teams": 2,
+    "orders": 160,
+    "receipts": 184,
+    "works": 8,
+    "suppliers": 24,
+    "teams": 3,
     "companies": 1,
-    "collaborators": 5
+    "collaborators": 12
   },
   "generationRules": [
-    "Use only the observed order schema and relationship shape as a template.",
-    "Replace every source identifier, code, name, date and monetary value with synthetic values.",
+    "Use only synthetic identifiers, names, dates and monetary values.",
+    "Use the scenario specification and seed to reproduce this dataset.",
     "Keep operational status separate from approval status.",
-    "Include pending orders with approval and without approval, plus partially delivered, fully delivered and canceled scenarios.",
-    "Do not infer ERP absence from nfe:null or itens:[]; these values are retained as synthetic schema-compatible placeholders.",
-    "No correspondence table between source and synthetic records was created."
+    "Do not create receipts for canceled orders.",
+    "No correspondence table between source and synthetic records exists."
   ],
   "pagesFound": null,
   "declaredTotals": null,
@@ -46,11 +48,10 @@
       "siengeAuthorized"
     ]
   },
-  "archivedOriginals": "archive/originals/",
   "archiveExcludedFromVersioning": true,
   "documentation": "docs/synthetic-data-schema.md",
   "qualityNotes": [
     "This dataset is synthetic and must not be presented as an ERP extraction.",
-    "Original files were preserved outside data/ and are excluded by .gitignore."
+    "No direct identifier or record-level value from an ERP is retained."
   ]
 }

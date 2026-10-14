@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "seed": 20261014,
+  "cutoffAt": "2025-04-01T00:00:00.000Z",
+  "ordersByStatus": {
+    "PENDING": 45,
+    "PARTIALLY_DELIVERED": 40,
+    "FULLY_DELIVERED": 45,
+    "CANCELED": 30
+  },
+  "works": [
+    "Obra Acadêmica Norte",
+    "Obra Acadêmica Centro",
+    "Obra Acadêmica Sul",
+    "Obra Acadêmica Leste",
+    "Obra Acadêmica Oeste",
+    "Obra Acadêmica Serra",
+    "Obra Acadêmica Vale",
+    "Obra Acadêmica Lago"
+  ],
+  "supplierCount": 24,
+  "receipts": {
+    "completed": 160,
+    "lateCompleted": 40,
+    "open": 24,
+    "overdueOpen": 12
+  },
+  "costRecordCount": 24
+}

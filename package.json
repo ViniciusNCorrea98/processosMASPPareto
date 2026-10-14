@@ -6,6 +6,8 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "test:masp": "node --test test/masp.test.mjs",
+    "validate:data": "node scripts/validate_synthetic_data.mjs",
+    "generate:data": "node scripts/generate_synthetic_data.mjs",
     "generate:p3": "python scripts/generate_p3_xlsx.py"
   },
   "dependencies": {
