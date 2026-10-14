@@ -194,6 +194,7 @@ body {
 
 .pareto-visual-wrap {
   margin-top: 18px;
+  overflow-x: auto;
 }
 .pareto-legend {
   display: flex;
@@ -207,6 +208,11 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+.pareto-instructions {
+  color: #667085;
+  font-size: 0.76rem;
+  margin: 0 0 8px 58px;
 }
 .legend-column {
   width: 13px;
@@ -226,7 +232,8 @@ body {
   display: block;
   width: 100%;
   height: auto;
-  min-height: 260px;
+  min-width: 680px;
+  min-height: 320px;
   overflow: visible;
 }
 .chart-grid {
@@ -241,6 +248,11 @@ body {
   fill: #667085;
   font-size: 12px;
 }
+.axis-title {
+  fill: #526071;
+  font-size: 12px;
+  font-weight: 700;
+}
 .reference-line {
   stroke: #d89149;
   stroke-width: 1.5;
@@ -248,9 +260,25 @@ body {
 }
 .pareto-bar {
   fill: #1c7c72;
+  transition: fill 150ms ease, opacity 150ms ease;
 }
-.pareto-bar:hover {
+.pareto-category {
+  cursor: pointer;
+}
+.pareto-category:hover .pareto-bar,
+.pareto-category.is-selected .pareto-bar {
   fill: #125c56;
+}
+.pareto-category:focus {
+  outline: none;
+}
+.pareto-category:focus .pareto-bar {
+  stroke: #102a43;
+  stroke-width: 3;
+}
+.pareto-category.is-selected .cumulative-point {
+  fill: #b9e6df;
+  stroke-width: 4;
 }
 .bar-value {
   fill: #102a43;
@@ -284,6 +312,21 @@ body {
   color: #667085;
   font-size: 0.72rem;
   margin: -4px 58px 0;
+  min-width: 564px;
+}
+.pareto-insight {
+  display: grid;
+  gap: 4px;
+  margin: 14px 0 0 58px;
+  padding: 12px 14px;
+  border-left: 3px solid #1c7c72;
+  background: #f2f8f7;
+  color: #254b48;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+.pareto-insight strong {
+  color: #102a43;
 }
 .pareto-summary {
   border-left: 3px solid #1c7c72;
@@ -332,6 +375,38 @@ body {
 .table-wrap {
   overflow-x: auto;
   margin-top: 16px;
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 16px;
+  color: #667085;
+  font-size: 0.82rem;
+}
+.pagination > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pagination button {
+  border: 1px solid #b8c2cc;
+  border-radius: 8px;
+  background: #fff;
+  color: #102a43;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 8px 11px;
+}
+.pagination button:hover:not(:disabled),
+.pagination button:focus-visible {
+  background: #eff6f5;
+}
+.pagination button:disabled {
+  color: #98a2b3;
+  cursor: not-allowed;
 }
 table {
   border-collapse: collapse;
@@ -476,16 +551,21 @@ footer {
     margin-left: 0;
   }
   .pareto-svg {
-    min-width: 0;
+    min-width: 680px;
   }
   .pareto-visual-wrap {
-    overflow-x: hidden;
+    overflow-x: auto;
   }
   .axis-caption {
-    min-width: 0;
     margin-left: 58px;
-    margin-right: 0;
     font-size: 0.66rem;
+  }
+  .pareto-instructions {
+    margin-left: 0;
+  }
+  .pagination {
+    align-items: flex-start;
+    flex-direction: column;
   }
   footer {
     display: block;

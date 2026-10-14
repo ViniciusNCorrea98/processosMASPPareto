@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import pendingOrders from "../data/pending-orders.json";
 import partialOrders from "../data/partially-delivered-orders.json";
 import fullOrders from "../data/fully-delivered-orders.json";
@@ -27,6 +27,7 @@ const config = configData as {
   timeUnit: string;
   dateConvention: string;
 };
+const RECEIPTS_PER_PAGE = 20;
 
 function formatDate(value: string | null) {
   if (!value) return "Não vinculado";
@@ -44,6 +45,10 @@ function formatDays(value: number | null) {
 
 function formatPercent(value: number) {
   return `${value.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`;
+}
+
+function compactWorkName(name: string) {
+  return name.replace(/^Obra Acadêmica\s+/, "");
 }
 
 function classify(receipt: Receipt, result: AnalysisResult) {
@@ -82,11 +87,23 @@ function Metric({
 }
 
 function ParetoChart({ rows }: { rows: AnalysisResult["paretoLateByWork"] }) {
-  const width = 680;
-  const height = 310;
-  const plot = { left: 58, top: 24, right: 58, bottom: 70 };
+  const [selectedWorkId, setSelectedWorkId] = useState(rows[0]?.obraId ?? "");
+  const width = 760;
+  const height = 350;
+  const plot = { left: 64, top: 28, right: 64, bottom: 108 };
   const plotWidth = width - plot.left - plot.right;
   const plotHeight = height - plot.top - plot.bottom;
+  const selectedRow =
+    rows.find((row) => row.obraId === selectedWorkId) ?? rows[0];
+  const thresholdIndex = rows.findIndex((row) => row.cumulativePercent >= 80);
+  const thresholdRow = rows[thresholdIndex];
+
+  useEffect(() => {
+    if (!rows.some((row) => row.obraId === selectedWorkId)) {
+      setSelectedWorkId(rows[0]?.obraId ?? "");
+    }
+  }, [rows, selectedWorkId]);
+
   const maxCount = Math.max(...rows.map((row) => row.count), 1);
   const bandWidth = plotWidth / rows.length;
   const countTicks =
@@ -131,10 +148,13 @@ function ParetoChart({ rows }: { rows: AnalysisResult["paretoLateByWork"] }) {
           80%
         </span>
       </div>
+      <p className="pareto-instructions">
+        Selecione uma coluna ou um ponto para destacar a obra e ler o insight.
+      </p>
       <svg
         className="pareto-svg"
         viewBox={`0 0 ${width} ${height}`}
-        role="img"
+        role="group"
         aria-labelledby="pareto-title pareto-description"
       >
         <title id="pareto-title">
@@ -211,8 +231,23 @@ function ParetoChart({ rows }: { rows: AnalysisResult["paretoLateByWork"] }) {
           const center = plot.left + bandWidth * (index + 0.5);
           const barWidth = Math.max(22, bandWidth * 0.58);
           const barY = yForCount(row.count);
+          const isSelected = row.obraId === selectedRow.obraId;
           return (
-            <g key={row.obraId}>
+            <g
+              className={`pareto-category${isSelected ? " is-selected" : ""}`}
+              key={row.obraId}
+              role="button"
+              tabIndex={0}
+              aria-pressed={isSelected}
+              aria-label={`Destacar ${row.obraName}: ${row.count} ocorrências, ${formatPercent(row.percent)} do total e ${formatPercent(row.cumulativePercent)} acumulados`}
+              onClick={() => setSelectedWorkId(row.obraId)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setSelectedWorkId(row.obraId);
+                }
+              }}
+            >
               <rect
                 className="pareto-bar"
                 x={center - barWidth / 2}
@@ -234,43 +269,48 @@ function ParetoChart({ rows }: { rows: AnalysisResult["paretoLateByWork"] }) {
               <text
                 className="category-label"
                 x={center}
-                y={height - 38}
-                textAnchor="middle"
+                y={height - 58}
+                textAnchor="end"
+                transform={`rotate(-28 ${center} ${height - 58})`}
               >
-                {row.obraName}
+                {compactWorkName(row.obraName)}
               </text>
               <text
                 className="category-percent"
                 x={center}
-                y={height - 20}
+                y={height - 28}
                 textAnchor="middle"
               >
                 {formatPercent(row.cumulativePercent)}
               </text>
+              <circle
+                className="cumulative-point"
+                cx={center}
+                cy={yForPercent(row.cumulativePercent)}
+                r="5"
+              />
             </g>
           );
         })}
         <polyline className="cumulative-line" points={points} />
-        {rows.map((row, index) => {
-          const center = plot.left + bandWidth * (index + 0.5);
-          return (
-            <circle
-              className="cumulative-point"
-              key={`point-${row.obraId}`}
-              cx={center}
-              cy={yForPercent(row.cumulativePercent)}
-              r="5"
-            >
-              <title>{`${row.obraName}: acumulado ${formatPercent(
-                row.cumulativePercent
-              )}`}</title>
-            </circle>
-          );
-        })}
+        <text className="axis-title" x={width / 2} y={height - 2} textAnchor="middle">
+          Eixo X: obras
+        </text>
       </svg>
       <div className="axis-caption">
         <span>Eixo esquerdo: quantidade de ocorrências</span>
         <span>Eixo direito: percentual acumulado</span>
+      </div>
+      <div className="pareto-insight" aria-live="polite">
+        <strong>{selectedRow.obraName}</strong>
+        <span>
+          {selectedRow.count} ocorrência(s), {formatPercent(selectedRow.percent)} do total e {formatPercent(selectedRow.cumulativePercent)} acumulados.
+        </span>
+        <span>
+          {thresholdRow
+            ? `A referência de 80% é alcançada após ${thresholdIndex + 1} de ${rows.length} obra(s), em ${thresholdRow.obraName}.`
+            : "Não há ocorrências para avaliar a referência de 80%."}
+        </span>
       </div>
     </div>
   );
@@ -279,6 +319,11 @@ function ParetoChart({ rows }: { rows: AnalysisResult["paretoLateByWork"] }) {
 export default function App() {
   const [workFilter, setWorkFilter] = useState("all");
   const [supplierFilter, setSupplierFilter] = useState("all");
+  const [receiptPage, setReceiptPage] = useState(1);
+
+  useEffect(() => {
+    setReceiptPage(1);
+  }, [workFilter, supplierFilter]);
 
   const orderById = useMemo(
     () => new Map(orders.map((order) => [order.id, order])),
@@ -335,6 +380,13 @@ export default function App() {
       classification: classify(receipt, analysis),
     };
   });
+  const receiptPageCount = Math.max(1, Math.ceil(rows.length / RECEIPTS_PER_PAGE));
+  const currentReceiptPage = Math.min(receiptPage, receiptPageCount);
+  const firstReceiptIndex = (currentReceiptPage - 1) * RECEIPTS_PER_PAGE;
+  const paginatedRows = rows.slice(
+    firstReceiptIndex,
+    firstReceiptIndex + RECEIPTS_PER_PAGE
+  );
   const hasResults = filteredReceipts.length > 0;
   const hasPareto = analysis.paretoLateByWork.length > 0;
 
@@ -558,7 +610,8 @@ export default function App() {
             Nenhum recebimento encontrado para os filtros selecionados.
           </p>
         ) : (
-          <div className="table-wrap">
+          <>
+            <div className="table-wrap">
             <table>
               <caption className="sr-only">
                 Tabela de recebimentos sintéticos filtrados
@@ -574,7 +627,7 @@ export default function App() {
                 </tr>
               </thead>
               <tbody>
-                {rows.map(({ receipt, order, duration, classification }) => (
+                {paginatedRows.map(({ receipt, order, duration, classification }) => (
                   <tr key={receipt.id}>
                     <td>
                       <strong>{order?.codigo ?? receipt.orderId}</strong>
@@ -593,7 +646,33 @@ export default function App() {
                 ))}
               </tbody>
             </table>
-          </div>
+            </div>
+            <nav className="pagination" aria-label="Paginação dos recebimentos">
+            <span>
+              Exibindo {firstReceiptIndex + 1}–
+              {Math.min(firstReceiptIndex + RECEIPTS_PER_PAGE, rows.length)} de {rows.length}
+            </span>
+            <div>
+              <button
+                type="button"
+                onClick={() => setReceiptPage(currentReceiptPage - 1)}
+                disabled={currentReceiptPage === 1}
+              >
+                Anterior
+              </button>
+              <strong>
+                Página {currentReceiptPage} de {receiptPageCount}
+              </strong>
+              <button
+                type="button"
+                onClick={() => setReceiptPage(currentReceiptPage + 1)}
+                disabled={currentReceiptPage === receiptPageCount}
+              >
+                Próxima
+              </button>
+            </div>
+            </nav>
+          </>
         )}
       </section>
 
